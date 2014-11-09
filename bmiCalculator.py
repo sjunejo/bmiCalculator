@@ -113,9 +113,9 @@ def determine_weight_class(bmi):
     
     if (bmi < 18.5):
         weight_class = "UNDERWEIGHT"
-    if (bmi >= 18.5 and bmi < 25.0):
+    elif (bmi >= 18.5 and bmi < 25.0):
         weight_class = "NORMAL"
-    if (bmi >= 25.0 and bmi < 30):
+    elif (bmi >= 25.0 and bmi < 30):
         weight_class = "OVERWEIGHT"
     else:
         weight_class = "OBESE"
