@@ -25,18 +25,16 @@ REGEX_HEIGHT = '(\d+\'\s*\d+\")|(\d+(\.\d+)?m)'
 INCHES_IN_ONE_METRE = 39.3700787
 
 def main():
-    gender, age, weight, height = getGender(), getAge(), getWeight(), getHeight()
+    gender, age, weight, height = get_gender(), get_age(), get_weight(), get_height()
     
-    bmi = calculateBMI(height, weight)
+    bmi = calculate_bmi(height, weight)
     
     print("Your BMI is: " + str(bmi))
     return
 
-def getUserInput():
-    return getGender(), getAge(), getWeight(), getHeight()
 
 
-def getAge():
+def get_age():
     while True:
         age = raw_input("Please enter your age (years): ")
         # Age must be an integer.
@@ -49,7 +47,7 @@ def getAge():
     return age
 
 
-def getGender():
+def get_gender():
     while True:
         gender = raw_input("Are you male or female? (Type M for male and F for female): ")
         if (gender.lower() == GENDER_MALE or gender == GENDER_FEMALE):
@@ -60,71 +58,71 @@ def getGender():
     return gender
 
 
-def getHeight():
+def get_height():
     while (True):
         height = raw_input("Please enter your height (Either in the format: x' y\" (feet,inches) or in m, e.g. 1.67m): ")
-        heightRegex = re.compile(REGEX_HEIGHT)
-        if heightRegex.match(height.lower()):
+        height_regex = re.compile(REGEX_HEIGHT)
+        if height_regex.match(height.lower()):
             break
         else:
             print("Incorrect input. Please try again")    
     return height
 
 
-def getWeight():
+def get_weight():
     while (True):
         weight = raw_input("Please enter your weight (Suffix with 'kg' or 'lb', e.g. '100lb'): ")
-        weightRegex = re.compile(REGEX_WEIGHT)
-        if weightRegex.match(weight.lower()):
+        weight_regex = re.compile(REGEX_WEIGHT)
+        if weight_regex.match(weight.lower()):
             break
         else:
             print("Incorrect input. Please try again")
     return weight
 
 
-def calculateBMI(height, weight):
+def calculate_bmi(height, weight):
     # BMI = Weight (kg) / Height^2
     # OR: Weight (lb) * 703 / height^2 (inches)
     # Decision to make: Should I calculate in kg or lb? Answer: Depends on user input.
     
-    weightValue = float(weight[:-2])
+    weight_value = float(weight[:-2])
     if (weight[-2:] == SUFFIX_KG):
         if (height[-1] != SUFFIX_METRES):
-            heightValue = convertFeetAndInchesToJustInches(height)
-            heightValue = convertInchesToMetres(heightValue)
+            height_value = convert_feet_and_inches_to_numeric_inches(height)
+            height_value = convert_inches_to_metres(heightValue)
         else:
-            heightValue = float(height[:-1])
+            height_value = float(height[:-1])
             
         #
         
-        bmi = weightValue/(heightValue**2)
+        bmi = weight_value/(heightValue**2)
     else:
         if (height[-1] == SUFFIX_METRES):
-            heightValue = convertMetresToInches(float(height[:-1]))
+            height_value = convert_metres_to_inches(float(height[:-1]))
         else:
-            heightValue = convertFeetAndInchesToJustInches(height)
+            height_value = convert_feet_and_inches_to_numeric_inches(height)
             
     
-        bmi = (weightValue * 703 / (heightValue ** 2)) # MAGIC NUMBERS LOL
+        bmi = (weight_value * 703 / (height_value ** 2)) # MAGIC NUMBERS LOL
     return bmi
 
 
-def determineWeightClass(bmi):
+def determine_weight_class(bmi):
     
     return
 
 
-def convertFeetAndInchesToJustInches(height):
+def convert_feet_and_inches_to_numeric_inches(height):
     h_feet = height.split("'")[0]
     h_inches = height.split("'")[1].split("\"")[0]
     
     inches = int(h_feet) * 12 + int(h_inches)
     return inches
 
-def convertMetresToInches(metres):
+def convert_metres_to_inches(metres):
     return metres * INCHES_IN_ONE_METRE
 
-def convertInchesToMetres(inches):
+def convert_inches_to_metres(inches):
     return inches / INCHES_IN_ONE_METRE    
 
 
