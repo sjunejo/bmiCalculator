@@ -11,25 +11,28 @@ import re
 
 
 # CONSTANTS
-GENDER_MALE = "m"
-GENDER_FEMALE = "f"
+SEX_MALE = "m"
+SEX_FEMALE = "f"
 SUFFIX_POUNDS = "lb"
 SUFFIX_KG = "kg"
 
 SUFFIX_METRES = "m"
 
-REGEX_WEIGHT = '\d+\s*(kg|lb)'
+REGEX_WEIGHT = '\d+(\.\d+)?\s*(kg|lb)'
 REGEX_HEIGHT = '(\d+\'\s*\d+\")|(\d+(\.\d+)?m)'
 
 
 INCHES_IN_ONE_METRE = 39.3700787
 
 def main():
-    gender, age, weight, height = get_gender(), get_age(), get_weight(), get_height()
+    sex, age, weight, height = get_sex(), get_age(), get_weight(), get_height()
     
     bmi = calculate_bmi(height, weight)
     
     print("Your BMI is: " + str(bmi))
+    
+    print("Your weight class is: " + determine_weight_class(bmi))
+    
     return
 
 
@@ -47,15 +50,15 @@ def get_age():
     return age
 
 
-def get_gender():
+def get_sex():
     while True:
-        gender = raw_input("Are you male or female? (Type M for male and F for female): ")
-        if (gender.lower() == GENDER_MALE or gender == GENDER_FEMALE):
+        sex = raw_input("Are you male or female? (Type M for male and F for female): ")
+        if (sex.lower() == SEX_MALE or sex == SEX_FEMALE):
             break
         else:
             print("Incorrect input, please try again.")
             
-    return gender
+    return sex
 
 
 def get_height():
@@ -89,13 +92,13 @@ def calculate_bmi(height, weight):
     if (weight[-2:] == SUFFIX_KG):
         if (height[-1] != SUFFIX_METRES):
             height_value = convert_feet_and_inches_to_numeric_inches(height)
-            height_value = convert_inches_to_metres(heightValue)
+            height_value = convert_inches_to_metres(height_value)
         else:
             height_value = float(height[:-1])
             
         #
         
-        bmi = weight_value/(heightValue**2)
+        bmi = weight_value/(height_value**2)
     else:
         if (height[-1] == SUFFIX_METRES):
             height_value = convert_metres_to_inches(float(height[:-1]))
@@ -108,8 +111,18 @@ def calculate_bmi(height, weight):
 
 
 def determine_weight_class(bmi):
+    # TODO: More sophisticated means of doing this!
     
-    return
+    if (bmi < 18.5):
+        weight_class = "UNDERWEIGHT"
+    if (bmi >= 18.5 and bmi < 25.0):
+        weight_class = "NORMAL"
+    if (bmi >= 25.0 and bmi < 30):
+        weight_class = "OVERWEIGHT"
+    else:
+        weight_class = "OBESE"
+    
+    return weight_class
 
 
 def convert_feet_and_inches_to_numeric_inches(height):
