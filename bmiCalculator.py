@@ -3,7 +3,7 @@ import re
 
 ###############################################
 # BMI CALCULATOR v1.0
-# by sjunejo.github.com
+# by Sadruddin Junejo (https://github.com/sjunejo)
 # TODO:
 # - Actual Calculation
 # - Unit Tests
@@ -16,11 +16,20 @@ GENDER_FEMALE = "f"
 SUFFIX_POUNDS = "lb"
 SUFFIX_KG = "kg"
 
+SUFFIX_METRES = "m"
+
 REGEX_WEIGHT = '\d+\s*(kg|lb)'
-REGEX_HEIGHT = '(\d+\'\s*\d+\")|(\d+m)' 
+REGEX_HEIGHT = '(\d+\'\s*\d+\")|(\d+(\.\d+)?m)'
+
+
+INCHES_IN_ONE_METRE = 39.3700787
 
 def main():
-    print(getUserInput())
+    gender, age, weight, height = getGender(), getAge(), getWeight(), getHeight()
+    
+    bmi = calculateBMI(height, weight)
+    
+    print("Your BMI is: " + str(bmi))
     return
 
 def getUserInput():
@@ -58,15 +67,13 @@ def getHeight():
         if heightRegex.match(height.lower()):
             break
         else:
-            print("Incorrect input. Please try again")
-    
+            print("Incorrect input. Please try again")    
     return height
 
 
 def getWeight():
     while (True):
         weight = raw_input("Please enter your weight (Suffix with 'kg' or 'lb', e.g. '100lb'): ")
-        
         weightRegex = re.compile(REGEX_WEIGHT)
         if weightRegex.match(weight.lower()):
             break
@@ -75,11 +82,50 @@ def getWeight():
     return weight
 
 
-def calculateBMI(gender, age, height, weight):
+def calculateBMI(height, weight):
+    # BMI = Weight (kg) / Height^2
+    # OR: Weight (lb) * 703 / height^2 (inches)
+    # Decision to make: Should I calculate in kg or lb? Answer: Depends on user input.
+    
+    weightValue = float(weight[:-2])
+    if (weight[-2:] == SUFFIX_KG):
+        if (height[-1] != SUFFIX_METRES):
+            heightValue = convertFeetAndInchesToJustInches(height)
+            heightValue = convertInchesToMetres(heightValue)
+        else:
+            heightValue = float(height[:-1])
+            
+        #
+        
+        bmi = weightValue/(heightValue**2)
+    else:
+        if (height[-1] == SUFFIX_METRES):
+            heightValue = convertMetresToInches(float(height[:-1]))
+        else:
+            heightValue = convertFeetAndInchesToJustInches(height)
+            
+    
+        bmi = (weightValue * 703 / (heightValue ** 2)) # MAGIC NUMBERS LOL
+    return bmi
+
+
+def determineWeightClass(bmi):
     
     return
-    
 
+
+def convertFeetAndInchesToJustInches(height):
+    h_feet = height.split("'")[0]
+    h_inches = height.split("'")[1].split("\"")[0]
+    
+    inches = int(h_feet) * 12 + int(h_inches)
+    return inches
+
+def convertMetresToInches(metres):
+    return metres * INCHES_IN_ONE_METRE
+
+def convertInchesToMetres(inches):
+    return inches / INCHES_IN_ONE_METRE    
 
 
 # INIT
