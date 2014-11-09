@@ -5,7 +5,7 @@ import re
 # BMI CALCULATOR v1.0
 # by Sadruddin Junejo (https://github.com/sjunejo)
 # TODO:
-# - Actual Calculation
+# Use Sex and Age data somehow (or remove them entirely)
 # - Unit Tests
 ###############################################
 
@@ -21,7 +21,6 @@ SUFFIX_METRES = "m"
 REGEX_WEIGHT = '\d+(\.\d+)?\s*(kg|lb)'
 REGEX_HEIGHT = '(\d+\'\s*\d+\")|(\d+(\.\d+)?m)'
 
-
 INCHES_IN_ONE_METRE = 39.3700787
 
 def main():
@@ -34,7 +33,6 @@ def main():
     print("Your weight class is: " + determine_weight_class(bmi))
     
     return
-
 
 
 def get_age():
